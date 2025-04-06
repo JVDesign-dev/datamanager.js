@@ -1,9 +1,6 @@
 import { encrypt, decrypt, generateRecoveryKey } from './crypto.js';
 
-export async function handleFile() {
-    const file = document.getElementById('fileInput').files[0];
-    const accessKey = document.getElementById('fileAccessKey')?.value;
-
+export async function handleFile(file, accessKey) {
     if(!accessKey) throw customError('No key provided', 'NO_KEY');
 
     const reader = new FileReader();
@@ -15,7 +12,7 @@ export async function handleFile() {
     });
 
     const result = await retrieveContent(fileContent, accessKey);
-    console.log(result);
+    return result;
 }
 
 async function start() {

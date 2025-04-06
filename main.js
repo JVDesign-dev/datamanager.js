@@ -24,8 +24,9 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
     button.addEventListener('click', handle);
     document.body.appendChild(button);
 
-    function handle() {
-        JFile.handleFile()
+    async function handle() {
+        const accessKey = document.getElementById('fileAccessKey')?.value;
+        const result = await JFile.handleFile(file, accessKey)
             .catch(error => {
                 switch(error.code) {
                     case 'NO_KEY':
@@ -41,14 +42,18 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
                         alert(error.message);
                 }
             });
+        
+        document.getElementById('resultContent').textContent = result;
     }
 });
 
-function downloadData() {
+async function downloadData() {
     const data = {test: 'Y'}
     const extension = document.getElementById('fileExtensionSelect').value;
     const password = document.getElementById('filePasswordInput').value;
-    const recoveryKey = generateRecoveryKey();
+    const recoveryKey = await generateRecoveryKey();
+
+    document.getElementById('recoveryKey').textContent = recoveryKey;
 
     JFile.downloadAsFile(data, 'gradia_save', extension, { password, recoveryKey })
         .catch(error => {
