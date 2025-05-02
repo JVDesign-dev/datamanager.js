@@ -110,29 +110,40 @@ export async function decrypt(encryptionInfo, passwordOrRecovery, data, hmac) {
 
     const userKey = await (deriveKey(passwordOrRecovery));
 
-    let dek;
-    try {
-        dek = await crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: ivArray },
-            userKey,
-            new Uint8Array(atob(passwordEncryptedDEK).split("").map(c => c.charCodeAt(0)))
-        );
+    async function tryDecrypt(key, data, iv) {
+        try {
+            return await crypto.subtle.decrypt(
+                { name: "AES-GCM", iv },
+                key,
+                new Uint8Array(atob(data).split("").map(c => c.charCodeAt(0)))
+            );
+        } catch {
+            return null;
+        }
     }
-    catch {
-        dek = await crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: ivArray },
-            userKey,
-            new Uint8Array(atob(recoveryEncryptedDEK).split("").map(c => c.charCodeAt(0)))
-        );
-    }
+    
+    let dek =
+        await tryDecrypt(userKey, passwordEncryptedDEK, ivArray) ||
+        await tryDecrypt(userKey, recoveryEncryptedDEK, ivArray);
+    
+    if (!dek) {
+        throw customError('DEK decryption failed', 'DEK_DECRYPTION_ERROR');
+    }    
 
     if(hmac && await computeHMAC(dek, await computeChecksum(data)) !== hmac) throw customError('HMAC validation failed', 'BAD_HMAC');
 
-    const decryptedData = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: ivArray },
-        await crypto.subtle.importKey("raw", dek, { name: "AES-GCM" }, false, ["decrypt"]),
-        new Uint8Array(atob(data).split("").map(c => c.charCodeAt(0))))
-            .catch(error => {throw customError('Decryption failed', 'DECRYPTION_ERROR')});
+    let decryptedData;
+    try {
+        console.log('Here')
+        decryptedData = await crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: ivArray },
+            await crypto.subtle.importKey("raw", dek, { name: "AES-GCM" }, false, ["decrypt"]),
+            new Uint8Array(atob(data).split("").map(c => c.charCodeAt(0)))
+        )
+    }
+    catch {
+        throw customError('Decryption failed', 'DECRYPTION_ERROR');
+    }
 
     return decoder.decode(decryptedData);
 }

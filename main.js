@@ -1,5 +1,9 @@
-import * as JFile from './jfile.js';
+import * as DataManager from './datamanager.js';
 import { generateRecoveryKey } from './crypto.js';
+
+const buildVersion = 'TTest';
+const settings = 'SeTTings';
+window.storage = DataManager.storage;
 
 document.getElementById('startButton').addEventListener('click', downloadData);
 document.getElementById('fileInput').addEventListener('change', (event) => {
@@ -26,7 +30,7 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
 
     async function handle() {
         const accessKey = document.getElementById('fileAccessKey')?.value;
-        const result = await JFile.handleFile(file, accessKey)
+        const result = await DataManager.handleFile(file, accessKey)
             .catch(error => {
                 switch(error.code) {
                     case 'NO_KEY':
@@ -35,6 +39,11 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
                     case 'INVALID_FILE_STRUCTURE':
                         alert(`The uploaded file's file structure is invalid.`);
                         break;
+                    case 'DEK_DECRYPTION_ERROR':
+                        alert('The provided key is invalid');
+                        break;
+                    case 'DECRYPTION_ERROR':
+                        alert('The decryption failed');
                     case 'BAD_HMAC':
                         alert('The file decryption failed, because the content seems to be altered or corrupted.');
                         break;
@@ -55,7 +64,7 @@ async function downloadData() {
 
     document.getElementById('recoveryKey').textContent = recoveryKey;
 
-    JFile.downloadAsFile(data, 'gradia_save', extension, { password, recoveryKey })
+    DataManager.download(data, 'gradia_save', extension, { password, recoveryKey })
         .catch(error => {
             switch(error.code) {
                 case 'MISSING_ENCRYPT_PARAM':
