@@ -4,7 +4,7 @@ import { encrypt, decrypt, generateRecoveryKey } from './crypto.js';
 //----- Storage Unit -----//
 
 export const storage = {
-    prefix: 'gradia-test',
+    prefix: 'datamanager',
     available: false,
     cloudSync: false,
 
@@ -91,8 +91,8 @@ export const storage = {
 
 //----- File Import -----//
 
-export async function handleFile(file, accessKey) {
-    if(!accessKey) throw customError('No key provided', 'NO_KEY');
+export async function handleFile(file, isEncrypted, accessKey) {
+    if(isEncrypted && !accessKey) throw customError('No key provided', 'NO_KEY');
 
     const reader = new FileReader();
 
@@ -132,8 +132,8 @@ async function retrieveContent(data, accessKey) {
                 parsedData.version !== 'Version 1.0' || 
                 typeof parsedData.content !== 'string'
             ) throw customError('Invalid file structure', 'INVALID_FILE_STRUCTURE');
+            result = parsedData.content;
     }
-    
     return result;
 }
 

@@ -1,36 +1,46 @@
 import * as DataManager from './datamanager.js';
 import { generateRecoveryKey } from './crypto.js';
+import * as UI from './ui.js';
 
-const buildVersion = 'TTest';
-const settings = 'SeTTings';
-window.storage = DataManager.storage;
+const subjects = {};
+const settings = {};
+let data;
 
-document.getElementById('startButton').addEventListener('click', downloadData);
-document.getElementById('fileInput').addEventListener('change', (event) => {
+initStorage();
+
+function initStorage() {
+    const initData = DataManager.storage.init();
+    Object.assign(subjects, initData.subjects);
+    Object.assign(settings, initData.settings);
+    const persistent = initData.persistent;
+    if(persistent) rand();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    UI.init({ 
+        triggerFileDownload: downloadData,
+        triggerFileUpload: fileUpload
+     });
+    UI.refresh();
+})
+
+function fileUpload(event) {
     const file = event.target.files[0];
     if(!file) return;
 
     const fileExtension = file.name.split('.').slice(-1)[0];
 
     if(fileExtension !== 'grde') {
-        handle();
+        handle(false);
         return;
     }
     
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.id = 'fileAccessKey';
-    document.body.appendChild(input);
+    document.documentElement.style.setProperty('--fileAccessDisplay', 'block');
+    document.getElementById('submitUpload').addEventListener('click', () => handle(true));
 
-    const button = document.createElement('button');
-    button.textContent = 'Submit';
-    button.id = 'submitUpload';
-    button.addEventListener('click', handle);
-    document.body.appendChild(button);
-
-    async function handle() {
+    async function handle(isEncrypted) {
         const accessKey = document.getElementById('fileAccessKey')?.value;
-        const result = await DataManager.handleFile(file, accessKey)
+        const result = await DataManager.handleFile(file, isEncrypted, accessKey)
             .catch(error => {
                 switch(error.code) {
                     case 'NO_KEY':
@@ -52,12 +62,14 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
                 }
             });
         
-        document.getElementById('resultContent').textContent = result;
+        data = result;
+        document.getElementById('resultContent').textContent = data;
+        document.documentElement.style.setProperty('--fileAccessDisplay', 'none');
     }
-});
+};
 
 async function downloadData() {
-    const data = {test: 'Y'}
+    const data = document.getElementById('fileContent').value || 'Hello World!';
     const extension = document.getElementById('fileExtensionSelect').value;
     const password = document.getElementById('filePasswordInput').value;
     const recoveryKey = await generateRecoveryKey();
@@ -75,4 +87,9 @@ async function downloadData() {
                     alert(error);
             }
         });
+}
+
+function rand() {
+    console.log(subjects);
+    console.log(settings);
 }

@@ -1,9 +1,21 @@
 // ----- Encryption ----- //
 
 export async function generateRecoveryKey() {
-    const array = new Uint8Array(32);
-    crypto.getRandomValues(array);
-    return btoa(String.fromCharCode(...array));
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const bytes = new Uint8Array(12); //96 bits of entropy (12 bytes)
+    crypto.getRandomValues(bytes);
+
+    let key = '';
+    for (let byte of bytes) {
+        key += charset[byte % charset.length];
+    }
+
+    // If the generated key is shorter than 16 characters, add random characters to reach the required length
+    while (key.length < 16) {
+        key += charset[Math.floor(Math.random() * charset.length)];
+    }
+
+    return key.match(/.{1,4}/g).join('-'); //Split into 4-4-4-4 format
 }
 
 async function computeChecksum(data) {
@@ -134,7 +146,6 @@ export async function decrypt(encryptionInfo, passwordOrRecovery, data, hmac) {
 
     let decryptedData;
     try {
-        console.log('Here')
         decryptedData = await crypto.subtle.decrypt(
             { name: "AES-GCM", iv: ivArray },
             await crypto.subtle.importKey("raw", dek, { name: "AES-GCM" }, false, ["decrypt"]),

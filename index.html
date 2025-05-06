@@ -2,18 +2,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FileCreator</title>
+    <title>DataManager.js</title>
     <script type="module" src="main.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <button id="startButton">GO!</button>
-    <select id="fileExtensionSelect">
-        <option value="grd">.grd</option>
-        <option value="grde">.grde</option>
-    </select>
-    <input id="fileInput" type="file" accept=".grd, .grde">
-    <input type="text" id="filePasswordInput" placeholder="Wunsch-Passwort">
-    <span id="recoveryKey"></span>
-    <span id="resultContent"></span>
+    <h1>DataManager.js</h1>
+    <p>Manages the data flow of the website - handling file uploads/downloads, local storage, and communication with the backend. Runs quietly in the background, doing what needs to be done.</p>
+    <div class="sectionWrapper">
+        <section>
+            <h1>File Download</h1>
+            <div>
+                <input id="fileContent" type="text" placeholder="Hello World!">
+                <label for="fileContent">Input content for the file</label>
+                <select id="fileExtensionSelect">
+                    <option value="grd">.grd</option>
+                    <option value="grde">.grde</option>
+                </select>
+                <label for="fileExtensionSelect">Choose a file extension</label>
+                <input type="text" id="filePasswordInput" placeholder="password" class="encryptedFile">
+                <label for="filePasswordInput" class="encryptedFile">Choose a password to lock the file</label>
+                <div class="encryptedFile box">
+                    <span id="recoveryKey" class="encryptedFile"></span>
+                    <button id="copyRecoveryKey">Copy</button>
+                </div>
+                <label for="copyRecoveryKey" class="encryptedFile">Your Recovery Code</label>
+                <button id="startButton">GO!</button>
+            </div>
+        </section>
+        <section>
+            <h1>File Upload</h1>
+                <div>
+                <input id="fileInput" type="file" accept=".grd, .grde">
+                <label for="fileInput">Upload your file</label>
+                <input id="fileAccessKey" class="fileAccess" type="text" placeholder="password">
+                <label for="fileAccessKey" class="fileAccess">Enter the password for this file</label>
+                <button id="submitUpload" class="fileAccess">Submit</button>
+                <span id="resultContent"></span>
+            </div>
+        </section>
+        <section>
+            <h1>LocalStorage</h1>
+            <div>
+                <input type="text" id="localStoragePrefix" placeholder="datamanager" list="localStorageKeys">
+                <label for="localStoragePrefix">Choose a localStorage prefix</label>
+                <datalist id="localStorageKeys">
+                    <option value="datamanager"></option>
+                </datalist>
+                <button id="submitStorage">Submit</button>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
