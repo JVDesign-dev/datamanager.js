@@ -33,17 +33,15 @@ export const storage = {
             localStorage.removeItem(testKey);
             storage.available = true;
 
-            // Already known user: Auto-return data
-            if(localStorage.getItem(storage.prefix) !== null) return {
+            // Initialize Storage Prefix
+            if(localStorage.getItem(storage.prefix) === null) localStorage.setItem(storage.prefix, '{}');
+                
+            // Return set values or templates
+            return {
                 subjects: storage.ensure('subjects', storage.subjects_template), 
                 settings: storage.ensure('settings', storage.settings_template),
                 persistent: true
             };
-
-            // Initialize Storage
-            localStorage.setItem(storage.prefix, '{}');
-            storage.set('subjects', storage.subjects_template);
-            storage.set('settings', storage.settings_template);
         }
         catch (e) {
             console.warn(`LocalStorage not available: ${e}`);
@@ -52,7 +50,7 @@ export const storage = {
                 subjects: storage.subjects_template,
                 settings: storage.settings_template,
                 persistent: false
-            }
+            };
         }
     },
 

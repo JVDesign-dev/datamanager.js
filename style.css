@@ -40,13 +40,22 @@ section > div {
     gap: 10px;
 }
 
-input, button, select {
+input, button, select, textarea {
     background: #fff;
     border-radius: 10px;
     border: none;
     color: #1e1e1e;
     padding: 7.5px 10px;
     font-size: 0.9rem;
+}
+
+textarea {
+    resize: none;
+    height: fit-content;
+}
+
+textArea:invalid {
+    border: solid 2px #f00;
 }
 
 button:hover {

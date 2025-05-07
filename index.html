@@ -49,7 +49,12 @@
                 <datalist id="localStorageKeys">
                     <option value="datamanager"></option>
                 </datalist>
-                <button id="submitStorage">Submit</button>
+                <textarea id="localStorageContent" rows="5" placeholder='"property1": "Hello",
+"property2": "World",
+"punctuation": "!"'></textarea>
+                <label for="localStorageContent">Properties of the localStorage JSON object</label>
+                <button id="setStorage">Set Storage</button>
+                <button id="getStorage">Get Storage</button>
             </div>
         </section>
     </div>
