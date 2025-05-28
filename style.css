@@ -10,6 +10,23 @@ body {
     padding: 10px 15px;
 }
 
+.heading {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin: 21px 0 -10px;
+}
+
+.logo {
+    height: 2rem;
+    aspect-ratio: 1;
+}
+
+.heading > h1 {
+    margin: 0;
+}
+
 h1 {
     font-size: 2rem;
     margin-bottom: -10px;

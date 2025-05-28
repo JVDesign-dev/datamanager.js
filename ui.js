@@ -187,9 +187,19 @@ export function init() {
                 if (start !== end) {
                     const selected = value.substring(start, end);
                     insertText(pair[0] + selected + pair[1], selected.length + 1);
-                } else {
+                }
+                else {
                     insertText(pair[0] + pair[1], 1);
                 }
+                break;
+            
+            case 'Quote':
+                e.preventDefault();
+                if(start !== end) {
+                    const selected = value.substring(start, end);
+                    insertText(`"${selected}"`, selected.length + 1);
+                }
+                else insertText(`""`, 1);
                 break;
     
             case 'Enter':
@@ -310,7 +320,7 @@ export function init() {
         const list = Object.keys(content);
         const result = [];
         for(let key of list) {
-            result.push(`"${key}": ${JSON.stringify(content[key], null, 2)}`);
+            result.push(`"${key}": ${JSON.stringify(content[key], null, 4)}`);
         }
         document.getElementById('localStorageContent').value = result.join(',\n');
     }
@@ -320,7 +330,7 @@ export function init() {
         const list = Object.keys(config);
         const result = [];
         for(let key of list) {
-            result.push(`"${key}": ${JSON.stringify(config[key], null, 2)}`);
+            result.push(`"${key}": ${JSON.stringify(config[key], null, 4)}`);
         }
         document.getElementById('fileConfig').value = result.join(',\n');
 
