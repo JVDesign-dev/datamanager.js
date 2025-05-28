@@ -42,12 +42,14 @@ async function computeHMAC(key, data) {
 }
 
 /**
- * @param {string} data 
- * @param {string} password 
- * @param {string} recoveryKey 
- * @returns 
+ * @param {string} data
+ * @param {string} password - The Primary Encryption Password
+ * @param {string} recoveryKey - The Secondary Encryption Password - Optional
+ * @returns {Object}
  */
 export async function encrypt(data, password, recoveryKey) {
+    if(typeof(password) !== 'string' || password.length === 0) throw customError('No valid Password for Encryption provided', 'NO_ENCRYPTION_PASSWORD');
+
     const encoder = new TextEncoder();
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -71,11 +73,21 @@ export async function encrypt(data, password, recoveryKey) {
     }
 
     const passwordKey = await deriveKey(password);
-    const recoveryKeyKey = await deriveKey(recoveryKey);
-
     const passwordEncryptedDEK = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, passwordKey, dek);
-    const recoveryEncryptedDEK = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, recoveryKeyKey, dek);
 
+    let recoveryEncryptedDEK = null;
+    if(recoveryKey) {
+        if(typeof(recoveryKey) !== 'string') throw customError('Invalid Recovery Key', 'INVALID_RECOVERY_KEY');
+        const recoveryKeyKey = await deriveKey(recoveryKey);
+        recoveryEncryptedDEK = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, recoveryKeyKey, dek);
+    }
+    else {
+        const randomFakeDEK = crypto.getRandomValues(new Uint8Array(32));
+        const fakeEncryptedDEK = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, passwordKey, randomFakeDEK);
+        console.log(`Setting to ${fakeEncryptedDEK}`)
+        recoveryEncryptedDEK = fakeEncryptedDEK;
+    }
+    
     const encryptedData = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await crypto.subtle.importKey(
         "raw", dek, { name: "AES-GCM" }, false, ["encrypt"]
     ), encoder.encode(data));
@@ -83,8 +95,8 @@ export async function encrypt(data, password, recoveryKey) {
 
     return {
         encryption: {
-            salt: Array.from(salt),
-            iv: Array.from(iv),
+            salt: btoa(String.fromCharCode(...salt)),
+            iv: btoa(String.fromCharCode(...iv)),
             passwordEncryptedDEK: btoa(String.fromCharCode(...new Uint8Array(passwordEncryptedDEK))),
             recoveryEncryptedDEK: btoa(String.fromCharCode(...new Uint8Array(recoveryEncryptedDEK)))
         },
@@ -100,8 +112,8 @@ export async function encrypt(data, password, recoveryKey) {
 export async function decrypt(encryptionInfo, passwordOrRecovery, data, hmac) {
     const { salt, iv, passwordEncryptedDEK, recoveryEncryptedDEK } = encryptionInfo;
     const decoder = new TextDecoder();
-    const saltArray = new Uint8Array(salt);
-    const ivArray = new Uint8Array(iv);
+    const saltArray = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
+    const ivArray = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
 
     async function deriveKey(secret) {
         const keyMaterial = await crypto.subtle.importKey(

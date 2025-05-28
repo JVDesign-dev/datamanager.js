@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -5,21 +6,58 @@
     <title>DataManager.js</title>
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="style.css">
+
+    <meta name="description" content="DataManager.js is a powerful JavaScript Module that manages file uploads, downloads, encryption and local storage interactions seamlessly for your web projects.">
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "DataManager.js",
+          "url": "https://github.com/jvdesignbavaria/datamanager.js",  
+          "description": "A JavaScript module that manages file uploads, downloads, encryption, and local storage interactions",
+          "applicationCategory": "DeveloperTool",
+          "operatingSystem": "Web",
+          "programmingLanguage": "JavaScript",
+          "author": {
+            "@type": "Person",
+            "name": "Your Name",
+            "url": "https://jvdesign.is-a.dev"
+          }
+        }
+    </script>        
 </head>
 <body>
     <h1>DataManager.js</h1>
-    <p>Manages the data flow of the website - handling file uploads/downloads, local storage, and communication with the backend. Runs quietly in the background, doing what needs to be done.</p>
+    <p>Manages the data flow of the website - handling file uploads/downloads as well as localStorage interactions. Runs quietly in the background, doing what needs to be done.</p>
     <div class="sectionWrapper">
+        <section>
+            <h1>File Configuration</h1>
+            <div>
+                <textarea id="fileConfig" rows="7" placeholder='"datamanager-dtm": {
+    "extension": "dtm", 
+    "encrypted": false, 
+    "minVersion": "Version 1.0", 
+    "currVersion": "Version 1.1", 
+    "fileName": "datamanager-demo"
+},
+"datamanager-dtme": {
+    "extension": "dtme", 
+    "encrypted": true, 
+    "minVersion": "Version 1.0", 
+    "currVersion": "Version 1.1", 
+    "fileName": "datamanager-demo"
+}'></textarea>
+                <label for="fileConfig">Configure, what files can be handled</label>
+                <button id="setFileConfig">Set File Config</button>
+            </div>
+        </section>
         <section>
             <h1>File Download</h1>
             <div>
                 <input id="fileContent" type="text" placeholder="Hello World!">
                 <label for="fileContent">Input content for the file</label>
-                <select id="fileExtensionSelect">
-                    <option value="grd">.grd</option>
-                    <option value="grde">.grde</option>
-                </select>
-                <label for="fileExtensionSelect">Choose a file extension</label>
+                <select id="fileFormatInput"></select>
+                <label for="fileFormatInput">Choose a file format</label>
                 <input type="text" id="filePasswordInput" placeholder="password" class="encryptedFile">
                 <label for="filePasswordInput" class="encryptedFile">Choose a password to lock the file</label>
                 <div class="encryptedFile box">
@@ -27,13 +65,13 @@
                     <button id="copyRecoveryKey">Copy</button>
                 </div>
                 <label for="copyRecoveryKey" class="encryptedFile">Your Recovery Code</label>
-                <button id="startButton">GO!</button>
+                <button id="downloadButton">GO!</button>
             </div>
         </section>
         <section>
             <h1>File Upload</h1>
                 <div>
-                <input id="fileInput" type="file" accept=".grd, .grde">
+                <input id="fileInput" type="file">
                 <label for="fileInput">Upload your file</label>
                 <input id="fileAccessKey" class="fileAccess" type="text" placeholder="password">
                 <label for="fileAccessKey" class="fileAccess">Enter the password for this file</label>

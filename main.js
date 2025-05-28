@@ -1,95 +1,69 @@
+// main.js — Demo Entry Point
+// Initializes the UI and preloads storage for demonstration.
+// In a real application, main.js would manage app state and UI logic.
+
+
 import * as DataManager from './datamanager.js';
-import { generateRecoveryKey } from './crypto.js';
 import * as UI from './ui.js';
 
-const subjects = {};
-const settings = {};
-let data;
-
-initStorage();
-
-function initStorage() {
-    const initData = DataManager.storage.init();
-    Object.assign(subjects, initData.subjects);
-    Object.assign(settings, initData.settings);
-    const persistent = initData.persistent;
-    if(persistent) rand();
-}
-
 window.addEventListener('DOMContentLoaded', () => {
-    UI.init({ 
-        triggerFileDownload: downloadData,
-        triggerFileUpload: fileUpload
-     });
+    initStorage();
+    initFileEngine();
+    UI.init();
     UI.refresh();
 })
 
-function fileUpload(event) {
-    const file = event.target.files[0];
-    if(!file) return;
+function initStorage() {
+    const prefix = document.getElementById('localStoragePrefix')?.value || 'datamanager';
+    DataManager.storage.prefix = prefix;
 
-    const fileExtension = file.name.split('.').slice(-1)[0];
-
-    if(fileExtension !== 'grde') {
-        handle(false);
-        return;
+    // Set templates for storage values
+    DataManager.storage.templates = {
+        subjects: {
+            version: undefined,
+            sessions: []
+        },
+        settings: {
+            lang: undefined,
+            examName: 'Schulaufgaben',
+            showMultiplier: false,
+            darkmode: true,
+            activeSession: undefined,
+            seenDownloadMessage: false,
+            offline: false,
+            seenStoragePolicy: false
+        }
     }
     
-    document.documentElement.style.setProperty('--fileAccessDisplay', 'block');
-    document.getElementById('submitUpload').addEventListener('click', () => handle(true));
+    // Set keys that should be automatically set on storage initialization based on their template
+    DataManager.storage.defaults = ['subjects', 'settings'];
 
-    async function handle(isEncrypted) {
-        const accessKey = document.getElementById('fileAccessKey')?.value;
-        const result = await DataManager.handleFile(file, isEncrypted, accessKey)
-            .catch(error => {
-                switch(error.code) {
-                    case 'NO_KEY':
-                        alert('You need to input your password or recovery key');
-                        break;
-                    case 'INVALID_FILE_STRUCTURE':
-                        alert(`The uploaded file's file structure is invalid.`);
-                        break;
-                    case 'DEK_DECRYPTION_ERROR':
-                        alert('The provided key is invalid');
-                        break;
-                    case 'DECRYPTION_ERROR':
-                        alert('The decryption failed');
-                    case 'BAD_HMAC':
-                        alert('The file decryption failed, because the content seems to be altered or corrupted.');
-                        break;
-                    default:
-                        alert(error.message);
-                }
-            });
-        
-        data = result;
-        document.getElementById('resultContent').textContent = data;
-        document.documentElement.style.setProperty('--fileAccessDisplay', 'none');
+    const initData = DataManager.storage.init();
+
+    console.log(initData)
+
+    window.demoData = {
+        ...initData.content
     }
-};
 
-async function downloadData() {
-    const data = document.getElementById('fileContent').value || 'Hello World!';
-    const extension = document.getElementById('fileExtensionSelect').value;
-    const password = document.getElementById('filePasswordInput').value;
-    const recoveryKey = await generateRecoveryKey();
-
-    document.getElementById('recoveryKey').textContent = recoveryKey;
-
-    DataManager.download(data, 'gradia_save', extension, { password, recoveryKey })
-        .catch(error => {
-            switch(error.code) {
-                case 'MISSING_ENCRYPT_PARAM':
-                    alert('Missing encryption Parameters');
-                    break;
-                default:
-                    console.log(error)
-                    alert(error);
-            }
-        });
+    if(initData.persistent) console.log(`Loaded demo data: ${JSON.stringify(window.demoData, null, 2)}`);
 }
 
-function rand() {
-    console.log(subjects);
-    console.log(settings);
+function initFileEngine() {
+    DataManager.file.formats = {
+        'datamanager-dtm': {
+            encrypted: false,
+            extension: 'dtm',
+            fileName: 'datamanager_demo_unencrypted',
+            minVersion: 'Version 1.0',
+            currVersion: 'Version 1.0'
+        },
+        'datamanager-dtme': {
+            encrypted: true,
+            extension: 'dtme',
+            fileName: 'datamanager_demo_encrypted',
+            minVersion: 'Version 1.1',
+            currVersion: 'Version 1.1'
+        }
+    }
 }
