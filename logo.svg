@@ -7,56 +7,22 @@
    viewBox="0 0 20 20"
    version="1.1"
    id="svg5"
-   inkscape:export-filename="datamanager.js.svg"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="1.829812"
-     inkscape:cx="268.06032"
-     inkscape:cy="247.29316"
-     inkscape:window-width="3440"
-     inkscape:window-height="1411"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs2" />
   <g
-     inkscape:label="Ebene 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#8f9f89;fill-opacity:1;stroke-width:0.390624;paint-order:fill markers stroke"
-       id="rect234"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:0.390624;paint-order:fill markers stroke"
+       id="rect234-7"
        width="20"
        height="20"
-       x="4.3238831e-08"
-       y="7.2006223e-09" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:13.1081px;font-family:'Gill Sans Nova';-inkscape-font-specification:'Gill Sans Nova, Bold Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.390624;paint-order:fill markers stroke"
-       x="4.042366"
-       y="17.265625"
-       id="text952"><tspan
-         sodipodi:role="line"
-         id="tspan950"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:13.1081px;font-family:'Gill Sans Nova';-inkscape-font-specification:'Gill Sans Nova, Bold Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:0.390624"
-         x="4.042366"
-         y="17.265625">DM</tspan></text>
+       x="0"
+       y="-8.8817842e-16" />
+    <path
+       id="rect234"
+       style="fill:#8f9f89;fill-opacity:1;stroke-width:0.390624;paint-order:fill markers stroke"
+       d="M 0,0 V 20 H 20 V 0 Z m 4.7528076,8.5098267 h 1.9137573 c 1.1094084,0 1.9521135,0.366929 2.5281525,1.1008453 0.576039,0.733916 0.8640286,1.813515 0.8640286,3.238678 0,1.450765 -0.2922731,2.549486 -0.876846,3.296204 -0.5845729,0.746717 -1.3803124,1.120071 -2.3873138,1.120071 H 4.7528076 Z m 6.4068604,0 h 1.593704 l 1.459274,2.9634093 1.452942,-2.9634093 h 1.600113 v 8.7557983 h -1.715316 v -5.530014 h -0.02564 l -1.248093,2.566605 h -0.128021 l -1.260834,-2.566605 h -0.02564 v 5.530014 H 11.159668 Z M 6.532135,10.001144 v 5.773163 h 0.1216126 c 0.5504372,0 0.9515577,-0.213334 1.2033081,-0.64003 0.2517503,-0.430962 0.3775787,-1.171245 0.3775787,-2.220916 0,-1.002735 -0.1130542,-1.738811 -0.3392029,-2.208176 C 7.6692829,10.23582 7.2724459,10.001144 6.7049408,10.001144 Z" />
   </g>
 </svg>
