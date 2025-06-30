@@ -24,12 +24,55 @@ export const storage = {
             localStorage.removeItem(testKey);
             storage.available = true;
 
-            // Initialize Storage Prefix
-            if(localStorage.getItem(storage.prefix) === null) {
+            let raw = localStorage.getItem(storage.prefix);
+            let parsed = null;
+
+            // Handle legacy malformed data
+            try {
+                parsed = JSON.parse(raw);
+            } catch (e) {}
+
+            // Fix case: array of {key, value}
+            if (Array.isArray(parsed)) {
+                const fixed = {};
+                for (const entry of parsed) {
+                    if (entry && typeof entry.key === 'string') {
+                        fixed[entry.key] = entry.value;
+                    }
+                }
+                localStorage.setItem(storage.prefix, JSON.stringify(fixed));
+                parsed = fixed;
+            }
+
+            // Fix case: missing prefix, but flat data in localStorage
+            if (parsed === null) {
+                const migrated = {};
+                for (const key of Object.keys(localStorage)) {
+                    if (key === storage.prefix || key.startsWith('__')) continue;
+
+                    let value;
+                    try {
+                        value = JSON.parse(localStorage.getItem(key));
+                        if (typeof value === 'object' && value !== null) continue; // skip structured data
+                    } catch {
+                        value = localStorage.getItem(key); // treat as string
+                    }
+
+                    migrated[key] = value;
+                    localStorage.removeItem(key);
+                }
+
+                localStorage.setItem(storage.prefix, JSON.stringify(migrated));
+                parsed = migrated;
+                isNewUser = false;
+            }
+
+            // Ensure the prefix exists and is a proper object
+            if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
                 localStorage.setItem(storage.prefix, '{}');
                 isNewUser = true;
             }
-                
+
             // Return storage.defaults or set their templates
             const initialized = {};
             for (const key of storage.defaults || []) {
