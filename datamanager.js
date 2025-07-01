@@ -206,7 +206,6 @@ export const file = {
         catch {
             throw customError('Invalid JSON structure', 'INVALID_JSON');
         }
-        console.log(parsed)
 
         file._validate(fileRef, parsed);
 
@@ -217,10 +216,6 @@ export const file = {
 
         if(formatConfig.encrypted) {
             const { encryption, hmac, content } = parsed;
-
-            console.log(encryption)
-            console.log(hmac)
-            console.log(content)
 
             if (!accessKey) throw customError('No key provided', 'NO_KEY');
             if (!encryption || !hmac || typeof content !== 'string') throw customError('Invalid encrypted file structure', 'INVALID_FILE_STRUCTURE');

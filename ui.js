@@ -30,7 +30,6 @@ export function refresh() {
 export function init() {
     document.getElementById('fileConfig').addEventListener('change', (event) => {
         const content = `{${event.target.value}}`;
-        console.log('h')
         try {
             const parsed = JSON.parse(content);
             event.target.setCustomValidity('');
@@ -52,7 +51,6 @@ export function init() {
     })
     document.getElementById('localStorageContent').addEventListener('change', (event) => {
         const content = `{${event.target.value}}`;
-        console.log('h')
         try {
             const parsed = JSON.parse(content);
             event.target.setCustomValidity('');
